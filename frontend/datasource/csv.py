@@ -1,6 +1,7 @@
 import openpyxl
 import pandas as pd
 import streamlit as st
+from pydantic import ValidationError
 
 
 class CSVCollector:
@@ -16,11 +17,12 @@ class CSVCollector:
         Inicia a coleta de dados.
         """
         getData = self.getData()
+        extractData = None
         if getData is not None:
             extractData = self.extractData(getData)
-            return extractData
-        else:
-            return "Nenhum arquivo foi inserido."
+        if extractData is not None:
+            validateData = self.validateData(extractData)
+            return validateData
 
     def getData(self):
         """
@@ -35,8 +37,8 @@ class CSVCollector:
         """
         workbook = openpyxl.load_workbook(dados_excel)
         sheet = workbook.active
-        cell_range = sheet[cell_range]
-        # Obter o íncide 0, que é o cabeçalho.
+        cell_range = sheet[self.cell_range]
+        # Obter o índice 0, que é o cabeçalho.
         headers = [cell.value for cell in cell_range[0]]
 
         data = []
@@ -45,8 +47,24 @@ class CSVCollector:
         dataframe = pd.DataFrame(data, columns=headers)
         return dataframe
 
-    def validateData(self):
-        pass
+    def validateData(self, dataframe):
+        error = []
+        valid_rows = []
+
+        for index, row in dataframe.iterrows():
+            try:
+                # Criar instancia do modelo Pydantic para cada linha.
+                valid_row = self._schema(**row.to_dict())
+                valid_rows.append(valid_row)
+            except ValidationError as e:
+                # Se houver erro, adicione a mensagem de erro à lista de erros.
+                error.append(f"Erro na linha {index + 1} :{str(e)}")
+        if error:
+            st.error[Exception("\n".join(error))]
+            return None  # Retornar None se houver erros
+
+        st.success("Tudo certo!")
+        return dataframe
 
     def loadData(self):
         pass

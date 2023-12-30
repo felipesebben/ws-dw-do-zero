@@ -1,7 +1,7 @@
 from datetime import date
 from enum import Enum
 
-from pydantic import BaseModel, EmailStr, PositiveFloat
+from pydantic import BaseModel, EmailStr, PositiveFloat, validator
 
 
 class CategoriaEnum(str, Enum):
@@ -23,4 +23,13 @@ class Catalogo(BaseModel):
     Descricao: str
     Preco: PositiveFloat
     Fornecedor: EmailStr
-    Date: date
+    Data: date
+
+    @validator("Preco")
+    def validador_preco(cls, v):
+        """
+        Valida o preço do produto.
+        """
+        if v <= 0:
+            raise ValueError("O preço deve ser maior que zero.")
+        return v
