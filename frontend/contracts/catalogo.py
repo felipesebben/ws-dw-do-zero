@@ -20,12 +20,12 @@ class Catalogo(BaseModel):
     EAN: int
     Produto: str
     Categoria: CategoriaEnum
-    Descricao: str
-    Preco: PositiveFloat
+    Descrição: str
+    Preço: PositiveFloat
     Fornecedor: EmailStr
     Data: date
 
-    @validator("Preco")
+    @validator("Preço")
     def validador_preco(cls, v):
         """
         Valida o preço do produto.

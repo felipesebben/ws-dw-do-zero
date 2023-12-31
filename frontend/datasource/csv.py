@@ -40,7 +40,6 @@ class CSVCollector:
         cell_range = sheet[self.cell_range]
         # Obter o índice 0, que é o cabeçalho.
         headers = [cell.value for cell in cell_range[0]]
-
         data = []
         for row in cell_range[1:]:
             data.append([cell.value for cell in row])
@@ -60,7 +59,7 @@ class CSVCollector:
                 # Se houver erro, adicione a mensagem de erro à lista de erros.
                 error.append(f"Erro na linha {index + 1} :{str(e)}")
         if error:
-            st.error[Exception("\n".join(error))]
+            st.error("\n".join(error))
             return None  # Retornar None se houver erros
 
         st.success("Tudo certo!")
