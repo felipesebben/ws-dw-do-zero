@@ -20,6 +20,10 @@ pyarrow = "^14.0.2"
 boto3 = "^1.34.8"
 botocore = "^1.34.8"
 schedule = "^1.2.1"
+python-dotenv = "^1.0.0"
+streamlit = "^1.29.0"
+pydantic = {extras = ["email"], version = "^2.5.3"}
+openpyxl = "^3.1.2"
 
 
 [build-system]
@@ -30,3 +34,4 @@ build-backend = "poetry.core.masonry.api"
 format = "isort . && black ."
 commit = "git add . && pre-commit run"
 run = "python -m uvicorn backend.fake-api.start:app --reload"
+streamlit = "streamlit run frontend/main.py"
